@@ -11,7 +11,7 @@ export default function HomePage() {
           JeanWatch
         </h1>
         <p className="text-lg text-gray-500 dark:text-gray-400">
-          Writing about trying things.
+          writing about trying things.
         </p>
       </div>
 
