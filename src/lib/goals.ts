@@ -15,6 +15,7 @@ export interface Goal {
   direction: "lower" | "higher";
   progress_i: number;
   progress_f?: number;
+  order: number;
 }
 
 function timeToSeconds(t: string): number {
@@ -47,10 +48,25 @@ function calcProgress(
   return Math.min(100, Math.max(0, Math.round(pct * 100)));
 }
 
+function completionGroup(goal: Goal): number {
+  const i_done = goal.progress_i >= 100;
+  const f_done = goal.progress_f !== undefined ? goal.progress_f >= 100 : false;
+  const has_f = goal.progress_f !== undefined;
+
+  if (has_f) {
+    if (i_done && f_done) return 2;   // both done → bottom
+    if (i_done || f_done) return 0;   // one done → top
+    return 1;                          // neither done → middle
+  } else {
+    if (i_done) return 2;             // single-person done → bottom
+    return 1;                          // active → middle
+  }
+}
+
 export function getAllGoals(): Goal[] {
   if (!fs.existsSync(goalsDirectory)) return [];
 
-  return fs
+  const goals = fs
     .readdirSync(goalsDirectory)
     .filter((f) => f.endsWith(".md") && f !== ".gitkeep")
     .map((fileName) => {
@@ -73,10 +89,17 @@ export function getAllGoals(): Goal[] {
         current_f: data.current_f ? String(data.current_f) : undefined,
         unit,
         direction,
+        order: typeof data.order === "number" ? data.order : 999,
         progress_i: calcProgress(start, target, String(data.current_i), direction, unit),
         progress_f: data.current_f
           ? calcProgress(start, target, String(data.current_f), direction, unit)
           : undefined,
       };
     });
+
+  return goals.sort((a, b) => {
+    const groupDiff = completionGroup(a) - completionGroup(b);
+    if (groupDiff !== 0) return groupDiff;
+    return a.order - b.order;
+  });
 }

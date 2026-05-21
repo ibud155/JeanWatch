@@ -6,4 +6,5 @@ current_i: "185"
 current_f: "185"
 unit: "lbs"
 direction: "higher"
+order: 3
 ---
