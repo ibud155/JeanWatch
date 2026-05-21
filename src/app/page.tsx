@@ -10,9 +10,17 @@ export default function HomePage() {
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">
           JeanWatch
         </h1>
-        <p className="text-lg text-gray-500 dark:text-gray-400">
-          writing about trying things.
-        </p>
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-lg text-gray-500 dark:text-gray-400">
+            writing about trying things.
+          </p>
+          <Link
+            href="/goals"
+            className="shrink-0 text-sm font-medium px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+          >
+            goals
+          </Link>
+        </div>
       </div>
 
       <div className="space-y-px">
