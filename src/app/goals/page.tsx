@@ -43,45 +43,67 @@ export default function GoalsPage() {
         <p className="text-gray-400 dark:text-gray-600">No goals yet.</p>
       ) : (
         <div className="space-y-6">
-          {goals.map((goal) => (
-            <div
-              key={goal.slug}
-              className="border border-gray-100 dark:border-gray-800 rounded-xl p-6"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {goal.title}
-                </h2>
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {goal.progress}%
-                </span>
-              </div>
+          {goals.map((goal) => {
+            const dual = goal.progress_f !== undefined;
 
-              {/* Progress bar */}
-              <div className="w-full h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden mb-4">
-                <div
-                  className="h-full bg-gray-900 dark:bg-white rounded-full transition-all duration-500"
-                  style={{ width: `${goal.progress}%` }}
-                />
-              </div>
+            return (
+              <div
+                key={goal.slug}
+                className="border border-gray-100 dark:border-gray-800 rounded-xl p-6"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {goal.title}
+                  </h2>
+                  {dual && (
+                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                      <span className="flex items-center gap-1.5">
+                        <span className="inline-block w-4 h-2 rounded-sm bar-solid" />
+                        I — {goal.progress_i}%
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="inline-block w-4 h-2 rounded-sm bar-striped" />
+                        F — {goal.progress_f}%
+                      </span>
+                    </div>
+                  )}
+                  {!dual && (
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {goal.progress_i}%
+                    </span>
+                  )}
+                </div>
 
-              {/* Start / Current / Target */}
-              <div className="flex items-center justify-between text-sm">
-                <div className="text-center">
-                  <p className="text-gray-400 dark:text-gray-600 text-xs mb-0.5">start</p>
-                  <p className="font-mono text-gray-600 dark:text-gray-400">{goal.start}</p>
+                {/* Progress bar */}
+                <div className="relative w-full h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden mb-4">
+                  {/* I — solid, rendered first (underneath) */}
+                  <div
+                    className="absolute inset-y-0 left-0 h-full rounded-full bar-solid transition-all duration-500"
+                    style={{ width: `${goal.progress_i}%` }}
+                  />
+                  {/* F — striped, rendered on top */}
+                  {dual && (
+                    <div
+                      className="absolute inset-y-0 left-0 h-full rounded-full bar-striped transition-all duration-500"
+                      style={{ width: `${goal.progress_f}%` }}
+                    />
+                  )}
                 </div>
-                <div className="text-center">
-                  <p className="text-gray-400 dark:text-gray-600 text-xs mb-0.5">current</p>
-                  <p className="font-mono font-semibold text-gray-900 dark:text-white">{goal.current}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-gray-400 dark:text-gray-600 text-xs mb-0.5">target</p>
-                  <p className="font-mono text-gray-600 dark:text-gray-400">{goal.target}</p>
+
+                {/* Start / Target */}
+                <div className="flex items-center justify-between text-sm">
+                  <div>
+                    <p className="text-gray-400 dark:text-gray-600 text-xs mb-0.5">start</p>
+                    <p className="font-mono text-gray-600 dark:text-gray-400">{goal.start}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-gray-400 dark:text-gray-600 text-xs mb-0.5">target</p>
+                    <p className="font-mono text-gray-600 dark:text-gray-400">{goal.target}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </main>

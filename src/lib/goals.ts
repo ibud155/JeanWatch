@@ -9,10 +9,12 @@ export interface Goal {
   title: string;
   start: string;
   target: string;
-  current: string;
+  current_i: string;
+  current_f?: string;
   unit: string;
   direction: "lower" | "higher";
-  progress: number;
+  progress_i: number;
+  progress_f?: number;
 }
 
 function timeToSeconds(t: string): number {
@@ -39,14 +41,10 @@ function calcProgress(
     c = parseFloat(current);
   }
 
-  if (direction === "lower") {
-    // lower current = more progress
-    const pct = (s - c) / (s - t);
-    return Math.min(100, Math.max(0, Math.round(pct * 100)));
-  } else {
-    const pct = (c - s) / (t - s);
-    return Math.min(100, Math.max(0, Math.round(pct * 100)));
-  }
+  const pct =
+    direction === "lower" ? (s - c) / (s - t) : (c - s) / (t - s);
+
+  return Math.min(100, Math.max(0, Math.round(pct * 100)));
 }
 
 export function getAllGoals(): Goal[] {
@@ -62,22 +60,23 @@ export function getAllGoals(): Goal[] {
       );
 
       const direction: "lower" | "higher" = data.direction ?? "higher";
+      const start = String(data.start);
+      const target = String(data.target);
+      const unit = data.unit as string;
 
       return {
         slug,
         title: data.title as string,
-        start: data.start as string,
-        target: data.target as string,
-        current: data.current as string,
-        unit: data.unit as string,
+        start,
+        target,
+        current_i: String(data.current_i),
+        current_f: data.current_f ? String(data.current_f) : undefined,
+        unit,
         direction,
-        progress: calcProgress(
-          String(data.start),
-          String(data.target),
-          String(data.current),
-          direction,
-          data.unit as string
-        ),
+        progress_i: calcProgress(start, target, String(data.current_i), direction, unit),
+        progress_f: data.current_f
+          ? calcProgress(start, target, String(data.current_f), direction, unit)
+          : undefined,
       };
     });
 }
