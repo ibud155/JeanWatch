@@ -1,7 +1,6 @@
 ---
 title: May 21 intervals
 date: 2026-05-27
-excerpt: test
 layout: post
 ---
 Thursdays are intervals days and we did our first session last week (8x400m). The pace was around 3:35/km although I didn't have my apple watch and we didn't want to carry our 
